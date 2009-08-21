@@ -11,18 +11,25 @@ Includes:
 }}}
 
 Buffers:
-
+{{{
 message_buffer_t* buffers = protocol_allocate;
+}}}
 
 just push new message to tx buffer
 
-{{{protocol_push( buffers->tx , message_t** )}}}
+{{{
+protocol_push( buffers->tx , message_t** )
+}}}
 
 or read message from bytestream:
-{{{protocol_push( buffers->rx, protocol_parse_raw_message(U8 **stream, int len) );}}}
+{{{
+protocol_push( buffers->rx, protocol_parse_raw_message(U8 **stream, int len) );
+}}}
 
 also need to handle messages
-{{{handle_message( protocol_pop_botton( buffers->rx) );}}}
+{{{
+handle_message( protocol_pop_botton( buffers->rx) );
+}}}
 
 and delete handled rx message from buffer:
 {{{protocol_pop_delete( buffers->rx);}}}
