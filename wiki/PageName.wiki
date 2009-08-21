@@ -2,19 +2,19 @@
 #labels Phase-Implementation
 = Introduction =
 
-*How to use this protocol*
+==How to use this protocol==
 
-_just push new message to tx buffer:_
+===just push new message to tx buffer===
 
 protocol_push( LinkedList_t** txbuffer ,message_t** )
 
-_or read message from bytestream:_
+===or read message from bytestream:===
 protocol_push( LinkedList_t** rxbuffer, protocol_parse_raw_message(U8 **stream, int len) );
 
-_also need to handle messages:_
+===also need to handle messages:===
 handle_message( protocol_pop_botton( rxbuffer) );
 
-_and delete handled rx message from buffer
+===and delete handled rx message from buffer===
 protocol_pop_delete( rxbuffer );
 
 = Details =
