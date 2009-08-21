@@ -6,16 +6,16 @@
 
 ===just push new message to tx buffer===
 
-´protocol_push( LinkedList_t** txbuffer ,message_t** )´
+'protocol_push( LinkedList_t** txbuffer ,message_t** )'
 
 ===or read message from bytestream:===
-´protocol_push( LinkedList_t** rxbuffer, protocol_parse_raw_message(U8 **stream, int len) );´
+'protocol_push( LinkedList_t** rxbuffer, protocol_parse_raw_message(U8 **stream, int len) );'
 
 ===also need to handle messages:===
-´handle_message( protocol_pop_botton( rxbuffer) );´
+'handle_message( protocol_pop_botton( rxbuffer) );'
 
 ===and delete handled rx message from buffer===
-´protocol_pop_delete( rxbuffer );´
+'protocol_pop_delete( rxbuffer );'
 
 = Details =
 Just so simple as can.. or is it? if You think it can be more simple, explain what you are thinking to me and maybe I learn more.... =)
