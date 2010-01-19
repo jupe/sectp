@@ -30,9 +30,9 @@ Reading message from "bytestream":
 protocol_push( buffers->rx, protocol_parse_raw_message(U8 *input, int inputlen) );
 }}}
 
-also need to handle messages
+also need to handle messages. Message handler can also construct new message. It can be passed directly to the transfer buffer).
 {{{
-handle_message( protocol_pop_botton( buffers->rx) );
+protocol_push( buffers->tx, handle_message( protocol_pop_botton( buffers->rx) ) );
 }}}
 
 and delete handled rx message from buffer:
