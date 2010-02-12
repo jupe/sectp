@@ -1,7 +1,9 @@
 /**
-   message_handler.h
+   \file message_handler.h
 
-   Copyright (C) 2009-2010 René Nyffenegger
+
+    @section author Author and license
+	Copyright (C) 2009-2010 Jussi Vatjus-Anttila (jussiva@gmail.com)
 
    This source code is provided 'as-is', without any express or implied
    warranty. In no event will the author be held liable for any damages
@@ -21,7 +23,6 @@
 
    3. This notice may not be removed or altered from any source distribution.
 
-   Jussi Vatjus-Anttila 	jussiva@gmail.com
 */
 
 #ifndef MESSAGE_HANDLER_H_INCLUDED

@@ -1,7 +1,7 @@
 /**
    message_handler.h
 
-   Copyright (C) 2009-2010 René Nyffenegger
+   Copyright (C) 2009-2010 Jussi Vatjus-Anttila
 
    This source code is provided 'as-is', without any express or implied
    warranty. In no event will the author be held liable for any damages
@@ -37,8 +37,15 @@
 #include "message_enumerations.h"
 #include "message_handler.h"
 
+
+/**
+*	Example handle function for Handle set-type of message
+*/
 static Bool handle_set_message(		const message_t		*const message,
-									message_t			**new_tx_message);
+									message_t			**new_tx_message);							
+/**
+*	Example handle function for Handle query-type of message
+*/
 static Bool handle_query_message(	const message_t		*const message);
 
 

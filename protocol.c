@@ -1,3 +1,7 @@
+/**
+*	\file protocol.c
+*
+*/
 
 #include <string.h>
 #include <stdlib.h>
@@ -104,12 +108,6 @@ void protocol_pop_delete( LinkedList_t *list )
 
 
 
-
-/**
-*  PROTOCOL MESSAGE FORM
-*
-*   byte_count [4B] | message_group [1B] | message_type [2B] | data
-*/
 message_t* protocol_parse_raw_message( char* raw_message_data, int message_size )
 {
 	U32 data_size;
