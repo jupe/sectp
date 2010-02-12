@@ -108,6 +108,12 @@ void protocol_pop_delete( LinkedList_t *list )
 
 
 
+
+/*
+*  PROTOCOL MESSAGE FORM
+*
+*   byte_count [4B] | message_group [1B] | message_type [2B] | data
+*/
 message_t* protocol_parse_raw_message( char* raw_message_data, int message_size )
 {
 	U32 data_size;
@@ -118,7 +124,7 @@ message_t* protocol_parse_raw_message( char* raw_message_data, int message_size 
     if( PROTOCOL_MALLOC(message, message_t, 1) ) 	return NULL;
     data_size = message_size - PROTOCOL_MIN_LENGTH;
 
-    message->data_size = U8x4toU32((U8*)raw_message_data);
+    message->data_size = proto_U8x4toU32((U8*)raw_message_data);
     message->data_size -= PROTOCOL_MIN_LENGTH;
 
 
