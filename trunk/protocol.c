@@ -16,6 +16,7 @@
 #include "linked_list.h"
 #include "protocol.h"
 
+static U32 proto_U8x4toU32(U8* in);
 
 message_buffer_t*    protocol_allocate( void )
 {
@@ -96,32 +97,13 @@ void protocol_pop_delete( LinkedList_t *list )
     if(*message == NULL)return;
 
     PROTOCOL_FREE((*message)->data);
-    PROTOCOL_FREE(*message);*message=NULL;
+    PROTOCOL_FREE(*message);
     linkedList_eraseBase( list );
 
 }
 
-U32 U8x4toU32(U8* in)
-{
-	U32 u=0;
-    u |= (U32)(((U32)in[0])<<24 &0xff000000);
-    u |= (U32)(((U32)in[1])<<16 &0x00ff0000);
-    u |= (U32)(((U32)in[2])<<8  &0x0000ff00);
-    u |= (U32)(((U32)in[3])     &0x000000ff);
 
-    if(u > 64){
-    	exception_handler(EXCEPTION_PROTOCOL_MESSAGE, (void*)LINEAT);
-    }
 
-    return u;
-}
-void U32toU8x4(U32 u, U8* out)
-{
-	out[0] = (u>>24)&0xFF;
-	out[1] = (u>>16)&0xFF;
-	out[2] = (u>>8)&0xFF;
-	out[3] = u&0xFF;
-}
 
 /**
 *  PROTOCOL MESSAGE FORM
@@ -130,7 +112,7 @@ void U32toU8x4(U32 u, U8* out)
 */
 message_t* protocol_parse_raw_message( char* raw_message_data, int message_size )
 {
-	U32 data_size, i;
+	U32 data_size;
 	message_t *message;
 
     if( (message_size < PROTOCOL_MIN_LENGTH) ||
@@ -151,7 +133,7 @@ message_t* protocol_parse_raw_message( char* raw_message_data, int message_size 
 
     message->group = (MESSAGE_GROUP)raw_message_data[4];
     message->type = (MESSAGE_TYPE)raw_message_data[5];
-    message->type_extension = (MESSAGE_TYPE_EXTENSION)raw_message_data[6];
+    message->type_extension = raw_message_data[6];
     message->data = NULL;
 
     if(message->data_size > 0){
@@ -178,7 +160,7 @@ raw_message_t* protocol_create_raw_message(message_t* message)
 
     if(message == NULL) return NULL;
 
-    U32 message_size = message->data_size + PROTOCOL_MIN_LENGTH, i;
+    U32 message_size = message->data_size + PROTOCOL_MIN_LENGTH;
 
     if( PROTOCOL_MALLOC(raw_message, raw_message_t, 1) )
     {
@@ -222,4 +204,32 @@ void protocol_raw_message_free(raw_message_t **message)
 {
 	PROTOCOL_FREE((*message)->data);
 	PROTOCOL_FREE(*message);
+}
+static U32 proto_U8x4toU32(U8* in)
+{
+	U32 u= U8x4toU32(in);
+    if(u > 64){
+    	HANDLE_EXCEPTION(EXCEPTION_PROTOCOL_MESSAGE, (void*)LINEAT);
+    }
+    return u;
+}
+S16 calcrc(U8 *ptr, S16 count)
+{
+	S16 crc;
+    U8 i;
+
+    crc = 0;
+    while (--count >= 0)
+    {
+        crc = crc ^ (S16) *ptr++ << 8;
+        i = 8;
+        do
+        {
+            if (crc & 0x8000)
+                crc = crc << 1 ^ 0x1021;
+            else
+                crc = crc << 1;
+        } while(--i);
+    }
+    return (crc);
 }
