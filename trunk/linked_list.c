@@ -1,7 +1,9 @@
 /**
- * buffer_handler_usart.c
+ * \file linked_list.c
  *
-   Copyright (C) 2009-2010 Jussi Vatjus-Anttila
+   
+    @section author Author and license
+	Copyright (C) 2009-2010 Jussi Vatjus-Anttila (jussiva@gmail.com)
    
    This source code is provided 'as-is', without any express or implied
    warranty. In no event will the author be held liable for any damages
@@ -28,84 +30,56 @@
 
 #include "linked_list.h"
 
-#define LINKED_MALLOC(x)	malloc(x)
-#define LINKED_FREE(x)		free(x)
+#define LINKED_MALLOC(x)	malloc(x)		//!< macro for malloc()
+#define LINKED_FREE(x)		free(x)			//!< macro for free()
 
+/** ****************************************
+ *	@ingroup linkedList
+ *	@defgroup static_member static members
+ *	Handle linked lists.
+ *	@{
+ ***************************************** */
+
+/**
+*	node insert after specifig node
+*	@param list		list linked list structure
+*	@param node		Node which after want insert
+*	@param newNode	node to insert
+*/
 static void insertAfter(LinkedList_t *list, node_t *node, node_t *newNode);
+/**
+*	node insert before specifig node
+*	@param list		list linked list structure
+*	@param node		Node which before want insert
+*	@param newNode	node to insert
+*/
 static void insertBefore(LinkedList_t *list, node_t *node, node_t *newNode);
+/**
+*	insert beginning of list
+*	@param list		list linked list structure
+*	@param newNode	node to insert beginning
+*/
 static void insertBeginning(LinkedList_t *list, node_t *newNode);
+/**
+*	insert end of list
+*	@param list		list linked list structure
+*	@param newNode	node to insert end of list
+*/
 static void insertEnd(LinkedList_t *list, node_t *newNode);
+/**
+*	erase list
+*	@param list		list linked list structure
+*	@param node		Node to be erased. Also free memory from node data
+*/
 static void eraseNode(LinkedList_t *list, node_t *node);
 
-static void insertAfter(LinkedList_t *list, node_t *node, node_t *newNode)
-{
-    newNode->prev = node;
-    newNode->next = node->next;
-    if(node->next == NULL)
-        list->lastNode = newNode;
-    else
-        ((node_t*)node->next)->prev = newNode;
-    node->next = newNode;
-}
-static void insertBefore(LinkedList_t *list, node_t *node, node_t *newNode)
-{
-    newNode->prev = node->prev;
-    newNode->next = node;
-    if ( node->prev == NULL )
-        list->firstNode = newNode;
-    else
-        ((node_t*)node->prev)->next = newNode;
 
-    node->prev    = newNode;
-}
-static void insertBeginning(LinkedList_t *list, node_t *newNode)
-{
-     if( list->firstNode == NULL) {
-         list->firstNode = newNode;
-         list->lastNode  = newNode;
-         newNode->prev = NULL;
-         newNode->next = NULL;
-     }
-     else
-         insertBefore(list, list->firstNode, newNode);
-}
-static void insertEnd(LinkedList_t *list, node_t *newNode)
-{
-     if (list->lastNode == NULL)
-         insertBeginning(list, newNode);
-     else
-         insertAfter(list, list->lastNode, newNode);
-}
-static void  eraseNode(LinkedList_t *list, node_t *node)
-{
-    node_t *nodeToErase = node;
+//! @}
 
-    if(node == NULL)return;
-    if(list->firstNode == NULL)return;
 
-    if (node->prev == NULL){
-        list->firstNode = node->next;
-        if(list->firstNode != NULL){
-            list->firstNode->prev = NULL;
-        }
-    }
-    else
-       ((node_t*)node->prev)->next = node->next;
 
-    if (node->next == NULL)
-       list->lastNode = node->prev;
-    else
-       ((node_t*)node->next)->prev = node->prev;
+/*************** FUNCTIONS IMPLEMENTATION START ******************/
 
-    //free memory from node data
-    if(nodeToErase->data)
-    {
-    	LINKED_FREE(nodeToErase->data);
-        nodeToErase->data = NULL;
-    }
-    LINKED_FREE(nodeToErase);
-    list->size--;
-}
 
 LinkedList_t* new_linkedList(void)
 {
@@ -183,7 +157,6 @@ Bool linkedList_addNewNode(LinkedList_t *list, void *data, size_t size)
 }
 
 
-
 void linkedList_listAll(LinkedList_t *list) // list all nodes function
 {
     node_t *node;
@@ -204,4 +177,78 @@ void linkedList_listAll(LinkedList_t *list) // list all nodes function
         }
         while( ( node = node->next ) != NULL );
     }
+}
+
+
+
+
+
+static void insertAfter(LinkedList_t *list, node_t *node, node_t *newNode)
+{
+    newNode->prev = node;
+    newNode->next = node->next;
+    if(node->next == NULL)
+        list->lastNode = newNode;
+    else
+        ((node_t*)node->next)->prev = newNode;
+    node->next = newNode;
+}
+static void insertBefore(LinkedList_t *list, node_t *node, node_t *newNode)
+{
+    newNode->prev = node->prev;
+    newNode->next = node;
+    if ( node->prev == NULL )
+        list->firstNode = newNode;
+    else
+        ((node_t*)node->prev)->next = newNode;
+
+    node->prev    = newNode;
+}
+static void insertBeginning(LinkedList_t *list, node_t *newNode)
+{
+     if( list->firstNode == NULL) {
+         list->firstNode = newNode;
+         list->lastNode  = newNode;
+         newNode->prev = NULL;
+         newNode->next = NULL;
+     }
+     else
+         insertBefore(list, list->firstNode, newNode);
+}
+static void insertEnd(LinkedList_t *list, node_t *newNode)
+{
+     if (list->lastNode == NULL)
+         insertBeginning(list, newNode);
+     else
+         insertAfter(list, list->lastNode, newNode);
+}
+static void  eraseNode(LinkedList_t *list, node_t *node)
+{
+    node_t *nodeToErase = node;
+
+    if(node == NULL)return;
+    if(list->firstNode == NULL)return;
+
+    if (node->prev == NULL){
+        list->firstNode = node->next;
+        if(list->firstNode != NULL){
+            list->firstNode->prev = NULL;
+        }
+    }
+    else
+       ((node_t*)node->prev)->next = node->next;
+
+    if (node->next == NULL)
+       list->lastNode = node->prev;
+    else
+       ((node_t*)node->next)->prev = node->prev;
+
+    //free memory from node data
+    if(nodeToErase->data)
+    {
+    	LINKED_FREE(nodeToErase->data);
+        nodeToErase->data = NULL;
+    }
+    LINKED_FREE(nodeToErase);
+    list->size--;
 }

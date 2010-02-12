@@ -1,8 +1,8 @@
-/*
- * message_enumerations.h
+/**
+ * \file message_enumerations.h
  *
- *  Created on: 31.7.2009
- *      Author: jussiva
+ *  \date 31.7.2009
+ *
  */
 
 #ifndef MESSAGE_ENUMERATIONS_H_
@@ -94,7 +94,9 @@ typedef enum
     MESSAGE_TYPE_EXTENSION_SRAM_USAGE
 
 } MESSAGE_TYPE_EXTENSION;
-
+/**
+*   example type extension for type histogram
+*/
 typedef enum
 {
 	MESSAGE_TYPE_EXTENSION_HISTOGRAM_WINDOW_SIZE=1,

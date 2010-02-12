@@ -2,18 +2,17 @@
  * 	@file	protocol.h
  *
  *  @date 	31.7.2009
- *  @Author jussiva
-  *  \mainpage
+ *  \mainpage
 
     @section screenshots Screenshots
     <a href="http://code.google.com/p/gppanel/">Go to the screenshots page.</a>
 
     @section overview Overview
-    Protocol head is protocol.c file.
+    Protocol head functions is presents in protocol.h file.
 	
 
     @section author Author and license
-	Copyright (C) 2009-2010 Jussi Vatjus-Anttila
+	Copyright (C) 2009-2010 Jussi Vatjus-Anttila (jussiva@gmail.com)
 
 	This source code is provided 'as-is', without any express or implied
 	warranty. In no event will the author be held liable for any damages
@@ -32,8 +31,10 @@
 	  misrepresented as being the original source code.
 
 	3. This notice may not be removed or altered from any source distribution.
-
-	Jussi Vatjus-Anttila 	jussiva@gmail.com
+	
+	\defgroup protocol	Protocol
+	@{
+	
 */
 #ifndef PROTOCOL_H_INCLUDED
 #define PROTOCOL_H_INCLUDED
@@ -42,36 +43,43 @@
 #include "linked_list.h"
 #include "message_enumerations.h"
 
-# define MALLOC(p,s,n)		(p=(s*)malloc(n*sizeof(s)))
-# define PROTOCOL_MALLOC(p,s,n)	MALLOC(p,s,n)
-# define PROTOCOL_FREE(p)		free(p)
+# define MALLOC(p,s,n)		(p=(s*)malloc(n*sizeof(s)))		//!< simple malloc macro
+# define PROTOCOL_MALLOC(p,s,n)	MALLOC(p,s,n)				//!< Protocol malloc macro
+# define PROTOCOL_FREE(p)		free(p)						//!< Protocol free macro
 
-#define PROTOCOL_TEST_PATTERN		"\x0\x0\x0\x5\x1\x1\x0TESTIQUERY"
-#define PROTOCOL_TEST_PATTERN_LEN	18
+#define PROTOCOL_TEST_PATTERN		"\x0\x0\x0\x5\x1\x1\x0TESTIQUERY"	//!< Protocol test pattern
+#define PROTOCOL_TEST_PATTERN_LEN	18									//!< Protocol test pattern length
 
-#define PROTOCOL_MIN_LENGTH			7
-#define PROTOCOL_MAX_LENGTH			64
+#define PROTOCOL_MIN_LENGTH			7									//!< Protocol minimum length
+#define PROTOCOL_MAX_LENGTH			64									//!< Protocol maximum length
 
-typedef unsigned char U8
+//!< typedef for U8
+typedef unsigned char U8		
 
 
 /**
-*   protocol message structure
+*	@struct message_t
+*	protocol message structure
+*   @{
 */
-typedef struct __attribute__((__packed__))
+typedef struct 
+//__attribute__((__packed__))
 {
+	
     MESSAGE_GROUP           group;				//!< message group
     MESSAGE_TYPE            type;				//!< message type
     U8  					type_extension;		//!< message type extension
     U8                      data_size;			//!< data size
     U8*                     data;				//!< U8 table of data
 }message_t;
+//! @}
 
 /**
- *  raw protocol message structure
+ *	raw protocol message structure
  *  @{
  */
-typedef struct __attribute__((__packed__))
+typedef struct 
+//__attribute__((__packed__))
 {
     U8* data;	//!< raw U8 data table
     U8  size;	//!< data table size
@@ -79,21 +87,19 @@ typedef struct __attribute__((__packed__))
 //! @}
 
 /**
- *   \struct 	message_buffer_t
  *   receive and trasfer protocol message structure
  *   @{
  */
 typedef struct __attribute__((__packed__))
 {
-    LinkedList_t *rx;	//!	RX messages buffer
-    LinkedList_t *tx;	//!	TX messages buffer
+    LinkedList_t *rx;	//!<	RX messages buffer
+    LinkedList_t *tx;	//!<	TX messages buffer
 } message_buffer_t;
 //! @}
 
 
 /**
 *   \brief 	Allocate memory area for protocol buffers
-*   @param none
 *   @return message_buffer_t* allocated memory area for messagebuffer structure
 */
 extern message_buffer_t*    protocol_allocate( void );
@@ -152,21 +158,34 @@ extern void                 protocol_pop_delete(   LinkedList_t *list);
 
 /**
 *   \brief 	parse raw hex format to message
-*   @param raw_message_data         hex format message
+*   @param  raw_message_data         hex format message
+*	@param  message_size			message length in raw format
 *   @return message_t*              parsed allocated message
 */
-extern message_t*           protocol_parse_raw_message(char* raw_message_data, int data_size);
+extern message_t*           protocol_parse_raw_message(char* raw_message_data, int message_size);
 
 /**
 *   \brief 	create raw hex message
-*   @param message_t                pointer to message
+*   @param message                	pointer to message
 *   @return raw_message_t*          raw message structure
 */
 extern raw_message_t*       protocol_create_raw_message(message_t* message);
-
+/**
+*	\brief Free allocated message
+*	@param message pointer to message
+*/
 extern void					protocol_message_free(message_t **message);
+/**
+*	\brief Free allocated raw_message
+*	@param message pointer to message
+*/
 extern void 				protocol_raw_message_free(raw_message_t **message);
-
+/**
+*	\brief Calculate crc16
+*	@param ptr pointer to begin calc
+*	@param count length of calculated
+*	@return CRC16
+*/
 extern S16 					calcrc(U8 *ptr, S16 count);
 
 /// @}
